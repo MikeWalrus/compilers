@@ -1,0 +1,6 @@
+G[N]
+N, A, B
+N::=AB
+AB::=AB
+AB::=1
+A::=ABA
