@@ -57,27 +57,27 @@ mod test {
     use test_case::test_case;
 
     #[test_case("1.c", "1.c")]
-    #[test_case("line-comment/1.c", "line-comment/1-ans.c")]
-    #[test_case("line-comment/2.c", "line-comment/2-ans.c")]
-    #[test_case("line-comment/3.c", "line-comment/3-ans.c")]
-    #[test_case("line-comment/4.c", "line-comment/4-ans.c")]
-    #[test_case("line-comment/5.c", "line-comment/5-ans.c")]
-    #[test_case("line-comment/6.c", "line-comment/6-ans.c")]
-    #[test_case("line-comment/7.c", "line-comment/7-ans.c")]
-    #[test_case("line-comment/8.c", "line-comment/8-ans.c")]
+    #[test_case("comment/line/1.c", "comment/line/1-ans.c")]
+    #[test_case("comment/line/2.c", "comment/line/2-ans.c")]
+    #[test_case("comment/line/3.c", "comment/line/3-ans.c")]
+    #[test_case("comment/line/4.c", "comment/line/4-ans.c")]
+    #[test_case("comment/line/5.c", "comment/line/5-ans.c")]
+    #[test_case("comment/line/6.c", "comment/line/6-ans.c")]
+    #[test_case("comment/line/7.c", "comment/line/7-ans.c")]
+    #[test_case("comment/line/8.c", "comment/line/8-ans.c")]
     #[test_case(
-        "line-comment/single-slash/1.txt",
-        "line-comment/single-slash/1-ans.txt"
+        "comment/line/single-slash/1.txt",
+        "comment/line/single-slash/1-ans.txt"
     )]
     #[test_case(
-        "line-comment/single-slash/2.txt",
-        "line-comment/single-slash/2.txt"
+        "comment/line/single-slash/2.txt",
+        "comment/line/single-slash/2.txt"
     )]
-    #[test_case("block-comment/1.c", "block-comment/1-ans.c")]
-    #[test_case("block-comment/2.c", "block-comment/2-ans.c")]
-    #[test_case("block-comment/3.c", "block-comment/3-ans.c")]
-    #[test_case("block-comment/nested/1.txt", "block-comment/nested/1-ans.txt")]
-    #[test_case("mix-comment/1.txt", "mix-comment/1-ans.txt")]
+    #[test_case("comment/block/1.c", "comment/block/1-ans.c")]
+    #[test_case("comment/block/2.c", "comment/block/2-ans.c")]
+    #[test_case("comment/block/3.c", "comment/block/3-ans.c")]
+    #[test_case("comment/block/nested/1.txt", "comment/block/nested/1-ans.txt")]
+    #[test_case("comment/mix/1.txt", "comment/mix/1-ans.txt")]
     fn test_preprocess(file: &str, ans_file: &str) -> Result<()> {
         let mut file = File::open(String::from("testcase/") + file)?;
         let mut ans_file = File::open(String::from("testcase/") + ans_file)?;
