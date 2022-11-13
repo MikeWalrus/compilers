@@ -25,6 +25,9 @@ pub fn preprocess(src: impl IntoIterator<Item = char>) -> String {
                                 None => todo!("Error"),
                                 _ => {}
                             },
+                            Some('\n') => {
+                                o.push('\n');
+                            }
                             None => todo!("Error"),
                             _ => {}
                         }
