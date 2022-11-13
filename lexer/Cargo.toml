@@ -7,6 +7,9 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.66"
+strum = "0.24.1"
+strum_macros = "0.24.3"
+thiserror = "1.0.37"
 
 [dev-dependencies]
 test-case = "2.2.2"
