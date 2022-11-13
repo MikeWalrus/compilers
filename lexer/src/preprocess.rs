@@ -1,5 +1,3 @@
-use super::error;
-
 pub fn preprocess(
     src: impl IntoIterator<Item = char>,
 ) -> Result<String, usize> {

@@ -1,8 +1,5 @@
 use std::{fmt::Display, path::PathBuf};
 
-use colored::*;
-use indenter::indented;
-
 #[derive(Debug, thiserror::Error)]
 pub struct Error {
     pub file_path: PathBuf,

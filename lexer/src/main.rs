@@ -1,5 +1,6 @@
 mod error;
 mod preprocess;
+mod token;
 
 use std::{
     fs::File,
@@ -8,7 +9,7 @@ use std::{
 };
 
 use anyhow::{anyhow, Context, Result};
-use clap::{builder::Str, Arg, Parser};
+use clap::Parser;
 
 #[derive(Parser)]
 struct Args {
@@ -47,7 +48,7 @@ fn main() -> Result<()> {
                     println!("{output_path:?}");
                     let mut output = File::create(output_path)?;
                     output.write_all(preprocessed.as_bytes())?;
-                    return Ok(())
+                    return Ok(());
                 }
             }
             Err(line_num) => {
