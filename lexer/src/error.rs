@@ -1,26 +1,26 @@
-use std::{fmt::Display, path::PathBuf};
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, thiserror::Error)]
+#[error("{}: {}", .line_num, .error_kind)]
+#[cfg_attr(test, derive(PartialEq))]
 pub struct Error {
-    pub file_path: PathBuf,
     pub line_num: usize,
-    pub error_type: ErrorKind,
+    pub error_kind: ErrorKind,
 }
 
-impl Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}:{}: {}",
-            self.file_path.to_str().unwrap(),
-            self.line_num,
-            self.error_type
-        )
-    }
+#[derive(thiserror::Error, Debug)]
+pub enum LexError {
+    #[error("failed to preprocess {}", Path::to_str(file_path).unwrap())]
+    PreprocessError { file_path: PathBuf, source: Error },
+    #[error("failed to scan {}", Path::to_str(file_path).unwrap())]
+    TokenError { file_path: PathBuf, source: Error },
 }
 
 #[derive(Debug, strum_macros::Display)]
+#[cfg_attr(test, derive(PartialEq))]
 pub enum ErrorKind {
     #[strum(serialize = "unterminated comment")]
     UnterminatedComment,
+    #[strum(serialize = "expect digit after \'.\'")]
+    ExpectDigit,
 }

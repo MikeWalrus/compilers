@@ -4,7 +4,7 @@ pub fn preprocess(
     let mut i = src.into_iter();
     let mut o = String::new();
     let mut line_num: usize = 1;
-    let mut comment_start = line_num;
+    let mut comment_start;
     'outer: while let Some(c) = i.next() {
         match c {
             '/' => match i.next() {

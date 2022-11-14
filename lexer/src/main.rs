@@ -1,4 +1,5 @@
 mod error;
+mod lexer;
 mod preprocess;
 mod token;
 
@@ -37,32 +38,39 @@ fn main() -> Result<()> {
     let file_path = Path::new(&args.file);
     let mut file = File::open(&args.file)
         .with_context(|| format!("cannot open \"{}\"", args.file))?;
-
-    if !args.preprocessed {
-        let mut src = String::new();
-        file.read_to_string(&mut src)?;
+    let mut src = String::new();
+    file.read_to_string(&mut src)?;
+    let preprocessed = if !args.preprocessed {
         match preprocess::preprocess(src.chars()) {
-            Ok(preprocessed) => {
+            Ok(s) => {
                 if args.preprocessor_only {
                     let output_path = preprocessed_path(file_path);
                     println!("{output_path:?}");
                     let mut output = File::create(output_path)?;
-                    output.write_all(preprocessed.as_bytes())?;
+                    output.write_all(s.as_bytes())?;
                     return Ok(());
                 }
+                s
             }
             Err(line_num) => {
-                return Err(error::Error {
+                return Err(error::LexError::PreprocessError {
                     file_path: file_path.to_owned(),
-                    line_num,
-                    error_type: error::ErrorKind::UnterminatedComment,
+                    source: error::Error {
+                        line_num,
+                        error_kind: error::ErrorKind::UnterminatedComment,
+                    },
                 })?
             }
         }
-    }
+    } else {
+        src
+    };
+
     if args.preprocessor_only {
         return Err(anyhow!("expect input to be not have been preprocessed"));
     }
+
+    lexer::scan(&preprocessed)?;
 
     Ok(())
 }

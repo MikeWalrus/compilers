@@ -1,12 +1,16 @@
+#[derive(Debug)]
 #[repr(u32)]
+#[cfg_attr(test, derive(PartialEq))]
 pub enum Qualifier {
     Void = 0,
     Int = 1,
     Double = 2,
 }
 
+#[derive(Debug)]
 #[repr(u32)]
-pub enum Relop {
+#[cfg_attr(test, derive(PartialEq))]
+pub enum RelopKind {
     Assign = 0,
     Gt = 1,
     Lt = 2,
@@ -16,7 +20,9 @@ pub enum Relop {
     Eq = 6,
 }
 
+#[derive(Debug)]
 #[repr(C, u32)]
+#[cfg_attr(test, derive(PartialEq))]
 pub enum Token {
     IntegerConstant(u32) = 0,
     FloatingConstant(f64) = 1,
@@ -31,7 +37,7 @@ pub enum Token {
     Minus = 10,
     Star = 11,
     Divide = 12,
-    Relop(Relop) = 13,
+    Relop(RelopKind) = 13,
     LeftBrace = 14,
     RightBrace = 15,
     LeftParen = 16,
@@ -40,4 +46,5 @@ pub enum Token {
     RightSqBracket = 19,
     Semicolon = 20,
     Comma = 21,
+    Not = 22,
 }
