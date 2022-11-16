@@ -1,16 +1,20 @@
+use std::collections::hash_map::Entry;
+use std::collections::HashMap;
 use std::iter::Peekable;
 
 use super::error::*;
 use super::token::*;
 
-pub fn scan(s: &str) -> Result<Vec<Token>, Error> {
+pub fn scan(s: &str) -> Result<(Vec<Token>, String), Error> {
     let lines = s.split('\n');
     let mut text = String::with_capacity(1024);
+    let mut known_ids = HashMap::new();
     let mut tokens = Vec::new();
+    let keyword_map = keyword_map();
     for (line_num, line) in lines.enumerate() {
         let mut i = line.chars().peekable();
         loop {
-            match get_token(&mut i, &mut text) {
+            match get_token(&mut i, &mut text, &keyword_map, &mut known_ids) {
                 Some(Some(Ok(token))) => {
                     tokens.push(token);
                 }
@@ -25,7 +29,7 @@ pub fn scan(s: &str) -> Result<Vec<Token>, Error> {
             }
         }
     }
-    Ok(tokens)
+    Ok((tokens, text))
 }
 
 fn get_token_after_decimal_point(
@@ -76,11 +80,50 @@ fn get_token_int(
     }
 }
 
+fn get_token_identifier(
+    i: &mut Peekable<impl Iterator<Item = char>>,
+    first_char: char,
+    text: &mut String,
+    keyword_map: &HashMap<&str, Token>,
+    known_ids: &mut HashMap<String, usize>,
+) -> Token {
+    let mut new_id = String::from(first_char);
+    while let Some(&c) = i.peek() {
+        if c.is_whitespace() || (c != '_' && c.is_ascii_punctuation()) {
+            break;
+        }
+        i.next().unwrap();
+        new_id.push(c);
+    }
+    if let Some(token) = keyword_map.get(new_id.as_str()) {
+        token.clone()
+    } else {
+        let text_len = new_id.len();
+        match known_ids.entry(new_id) {
+            Entry::Occupied(e) => Token::Id(Identifier {
+                text_begin: *e.get(),
+                text_len,
+            }),
+            Entry::Vacant(e) => {
+                let text_begin = text.len();
+                text.push_str(e.key());
+                e.insert(text_begin);
+                Token::Id(Identifier {
+                    text_begin,
+                    text_len,
+                })
+            }
+        }
+    }
+}
+
 fn get_token(
     i: &mut Peekable<impl Iterator<Item = char>>,
-    buf: &mut String,
+    text: &mut String,
+    keyword_map: &HashMap<&str, Token>,
+    known_ids: &mut HashMap<String, usize>,
 ) -> Option<Option<Result<Token, ErrorKind>>> {
-    let _text_offset = buf.len();
+    let _text_offset = text.len();
     let c = i.next()?;
 
     Some(
@@ -153,7 +196,13 @@ fn get_token(
                 if c.is_whitespace() {
                     None
                 } else {
-                    todo!()
+                    Some(get_token_identifier(
+                        i,
+                        c,
+                        text,
+                        keyword_map,
+                        known_ids,
+                    ))
                 }
             }
         }
@@ -166,6 +215,8 @@ mod test {
     use super::*;
     use anyhow::Result;
     use test_case::test_case;
+    use QualifierKind::*;
+    use RelopKind::*;
     use Token::*;
 
     #[test_case("123", Ok(vec![IntegerConstant(123)]))]
@@ -185,6 +236,7 @@ mod test {
     #[test_case(";,", Ok(vec![Semicolon, Comma]))]
     #[test_case("1+1/2", Ok(vec![IntegerConstant(1), Plus, IntegerConstant(1), Divide, IntegerConstant(2)]))]
     #[test_case("1.2/2", Ok(vec![FloatingConstant(1.2), Divide, IntegerConstant(2)]))]
+    #[test_case("0.+.0", Ok(vec![FloatingConstant(0.0), Plus, FloatingConstant(0.0)]))]
     #[test_case("=", Ok(vec![Relop(RelopKind::Assign)]))]
     #[test_case("==", Ok(vec![Relop(RelopKind::Eq)]))]
     #[test_case("<", Ok(vec![Relop(RelopKind::Lt)]))]
@@ -197,8 +249,57 @@ mod test {
     #[test_case("1>=2=2", Ok(vec![IntegerConstant(1), Relop(RelopKind::Ge), IntegerConstant(2), Relop(RelopKind::Assign), IntegerConstant(2)]))]
     #[test_case(".", Err(Error{line_num: 1, error_kind: ErrorKind::ExpectDigit}))]
     #[test_case(". 1", Err(Error{line_num: 1, error_kind: ErrorKind::ExpectDigit}))]
-    fn test_scan(s: &str, ans: Result<Vec<Token>, Error>) -> Result<()> {
-        assert_eq!(scan(s), ans);
+    fn test_scan_without_text(
+        s: &str,
+        ans: Result<Vec<Token>, Error>,
+    ) -> Result<()> {
+        assert_eq!(scan(s).map(|x| x.0), ans);
+        Ok(())
+    }
+
+    struct TokenTestcase {
+        s: &'static str,
+        ans: Vec<Token>,
+        text: &'static str,
+    }
+
+    macro_rules! test_dir {
+        () => {
+            "../testcase/token/"
+        };
+    }
+
+    macro_rules! include_test_str {
+        ($file:expr) => {
+            include_str!(concat!(test_dir!(), $file))
+        };
+    }
+
+    macro_rules! include_test {
+        ($file:expr) => {
+            include!(concat!(test_dir!(), $file))
+        };
+    }
+
+    macro_rules! token_testcase {
+        ($name:literal) => {
+            TokenTestcase {
+                s: include_test_str!(concat!($name, ".in")),
+                ans: include_test!(concat!($name, ".token.in")),
+                text: include_test_str!(concat!($name, ".text.in")),
+            }
+        };
+    }
+
+    #[test_case(token_testcase!{1})]
+    #[test_case(token_testcase!{2})]
+    #[test_case(token_testcase!{3})]
+    #[test_case(token_testcase!{4})]
+    #[test_case(token_testcase!{5})]
+    #[test_case(token_testcase!{6})]
+    fn test_scan(t: TokenTestcase) -> Result<()> {
+        let result = scan(t.s)?;
+        assert_eq!((result.0, result.1.as_str()), (t.ans, t.text));
         Ok(())
     }
 }

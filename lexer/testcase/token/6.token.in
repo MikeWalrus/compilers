@@ -1,0 +1,43 @@
+vec![
+    Qualifier(Int),
+    Id(Identifier {
+        text_begin: 0,
+        text_len: 4,
+    }),
+    Relop(Assign),
+    IntegerConstant(1),
+    Semicolon,
+    Qualifier(Int),
+    Id(Identifier {
+        text_begin: 4,
+        text_len: 4,
+    }),
+    Relop(Assign),
+    IntegerConstant(1),
+    Semicolon,
+    Qualifier(Int),
+    Id(Identifier {
+        text_begin: 8,
+        text_len: 25,
+    }),
+    Relop(Assign),
+    IntegerConstant(2),
+    Star,
+    Id(Identifier {
+        text_begin: 0,
+        text_len: 4,
+    }),
+    Plus,
+    IntegerConstant(2),
+    Star,
+    Id(Identifier {
+        text_begin: 4,
+        text_len: 4,
+    }),
+    Semicolon,
+    Id(Identifier {
+        text_begin: 8,
+        text_len: 25,
+    }),
+    Semicolon,
+]
