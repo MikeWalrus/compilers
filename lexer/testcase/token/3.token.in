@@ -1,26 +1,3 @@
 vec![
-    Id(Identifier {
-        text_begin: 0,
-        text_len: 1,
-    }),
-    Plus,
-    Id(Identifier {
-        text_begin: 1,
-        text_len: 1,
-    }),
-    Minus,
-    Id(Identifier {
-        text_begin: 2,
-        text_len: 1,
-    }),
-    Star,
-    Id(Identifier {
-        text_begin: 3,
-        text_len: 1,
-    }),
-    Divide,
-    Id(Identifier {
-        text_begin: 4,
-        text_len: 1,
-    }),
+    Id(0), Plus, Id(1), Minus, Id(2), Star, Id(3), Divide, Id(4)
 ]

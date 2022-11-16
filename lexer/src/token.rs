@@ -30,7 +30,7 @@ pub enum RelopKind {
 pub enum Token {
     IntegerConstant(u32) = 0,
     FloatingConstant(f64) = 1,
-    Id(Identifier) = 2,
+    Id(usize) = 2,
     If = 3,
     Else = 4,
     While = 5,

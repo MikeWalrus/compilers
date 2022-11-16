@@ -1,0 +1,22 @@
+vec![
+    Identifier {
+        text_begin: 0,
+        text_len: 1,
+    },
+    Identifier {
+        text_begin: 1,
+        text_len: 1,
+    },
+    Identifier {
+        text_begin: 2,
+        text_len: 1,
+    },
+    Identifier {
+        text_begin: 3,
+        text_len: 1,
+    },
+    Identifier {
+        text_begin: 4,
+        text_len: 1,
+    },
+]

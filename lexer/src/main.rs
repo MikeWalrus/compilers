@@ -70,14 +70,15 @@ fn main() -> Result<()> {
         return Err(anyhow!("expect input to be not have been preprocessed"));
     }
 
-    let (tokens, text) =
+    let output =
         lexer::scan(&preprocessed).map_err(|e| LexError::TokenError {
             file_path: file_path.to_owned(),
             source: e,
         })?;
 
-    eprintln!("{:#?}", tokens);
-    eprintln!("{:#?}", text);
+    if args.human_readable {
+        eprintln!("{:#?}", output);
+    }
 
     Ok(())
 }

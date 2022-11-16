@@ -1,1 +1,1 @@
-vec![Id(Identifier { text_begin: 0, text_len: 3 }), Id(Identifier { text_begin: 3, text_len: 1 })]
+vec![Id(0), Id(1)]

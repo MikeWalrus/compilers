@@ -5,16 +5,31 @@ use std::iter::Peekable;
 use super::error::*;
 use super::token::*;
 
-pub fn scan(s: &str) -> Result<(Vec<Token>, String), Error> {
+#[derive(Debug)]
+#[cfg_attr(test, derive(PartialEq))]
+pub struct LexerOutput {
+    pub tokens: Vec<Token>,
+    pub id_table: Vec<Identifier>,
+    pub text: String,
+}
+
+pub fn scan(s: &str) -> Result<LexerOutput, Error> {
     let lines = s.split('\n');
     let mut text = String::with_capacity(1024);
     let mut known_ids = HashMap::new();
     let mut tokens = Vec::new();
     let keyword_map = keyword_map();
+    let mut id_table = Vec::new();
     for (line_num, line) in lines.enumerate() {
         let mut i = line.chars().peekable();
         loop {
-            match get_token(&mut i, &mut text, &keyword_map, &mut known_ids) {
+            match get_token(
+                &mut i,
+                &mut text,
+                &keyword_map,
+                &mut known_ids,
+                &mut id_table,
+            ) {
                 Some(Some(Ok(token))) => {
                     tokens.push(token);
                 }
@@ -29,7 +44,11 @@ pub fn scan(s: &str) -> Result<(Vec<Token>, String), Error> {
             }
         }
     }
-    Ok((tokens, text))
+    Ok(LexerOutput {
+        tokens,
+        id_table,
+        text,
+    })
 }
 
 fn get_token_after_decimal_point(
@@ -85,7 +104,8 @@ fn get_token_identifier(
     first_char: char,
     text: &mut String,
     keyword_map: &HashMap<&str, Token>,
-    known_ids: &mut HashMap<String, usize>,
+    id_map: &mut HashMap<String, usize>,
+    id_table: &mut Vec<Identifier>,
 ) -> Token {
     let mut new_id = String::from(first_char);
     while let Some(&c) = i.peek() {
@@ -98,20 +118,20 @@ fn get_token_identifier(
     if let Some(token) = keyword_map.get(new_id.as_str()) {
         token.clone()
     } else {
-        let text_len = new_id.len();
-        match known_ids.entry(new_id) {
-            Entry::Occupied(e) => Token::Id(Identifier {
-                text_begin: *e.get(),
-                text_len,
-            }),
+        match id_map.entry(new_id) {
+            Entry::Occupied(e) => Token::Id(*e.get()),
             Entry::Vacant(e) => {
                 let text_begin = text.len();
-                text.push_str(e.key());
-                e.insert(text_begin);
-                Token::Id(Identifier {
+                let id = e.key();
+                let text_len = id.len();
+                text.push_str(id);
+                let id_index = id_table.len();
+                e.insert(id_index);
+                id_table.push(Identifier {
                     text_begin,
                     text_len,
-                })
+                });
+                Token::Id(id_index)
             }
         }
     }
@@ -122,6 +142,7 @@ fn get_token(
     text: &mut String,
     keyword_map: &HashMap<&str, Token>,
     known_ids: &mut HashMap<String, usize>,
+    id_table: &mut Vec<Identifier>,
 ) -> Option<Option<Result<Token, ErrorKind>>> {
     let _text_offset = text.len();
     let c = i.next()?;
@@ -202,6 +223,7 @@ fn get_token(
                         text,
                         keyword_map,
                         known_ids,
+                        id_table,
                     ))
                 }
             }
@@ -216,7 +238,6 @@ mod test {
     use anyhow::Result;
     use test_case::test_case;
     use QualifierKind::*;
-    use RelopKind::*;
     use Token::*;
 
     #[test_case("123", Ok(vec![IntegerConstant(123)]))]
@@ -253,14 +274,13 @@ mod test {
         s: &str,
         ans: Result<Vec<Token>, Error>,
     ) -> Result<()> {
-        assert_eq!(scan(s).map(|x| x.0), ans);
+        assert_eq!(scan(s).map(|x| x.tokens), ans);
         Ok(())
     }
 
     struct TokenTestcase {
         s: &'static str,
-        ans: Vec<Token>,
-        text: &'static str,
+        ans: LexerOutput,
     }
 
     macro_rules! test_dir {
@@ -285,8 +305,12 @@ mod test {
         ($name:literal) => {
             TokenTestcase {
                 s: include_test_str!(concat!($name, ".in")),
-                ans: include_test!(concat!($name, ".token.in")),
-                text: include_test_str!(concat!($name, ".text.in")),
+                ans: LexerOutput {
+                    tokens: include_test!(concat!($name, ".token.in")),
+                    id_table: include_test!(concat!($name, ".id.in")),
+                    text: include_test_str!(concat!($name, ".text.in"))
+                        .to_owned(),
+                },
             }
         };
     }
@@ -299,7 +323,7 @@ mod test {
     #[test_case(token_testcase!{6})]
     fn test_scan(t: TokenTestcase) -> Result<()> {
         let result = scan(t.s)?;
-        assert_eq!((result.0, result.1.as_str()), (t.ans, t.text));
+        assert_eq!(result, t.ans);
         Ok(())
     }
 }

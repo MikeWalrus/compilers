@@ -1,0 +1,5 @@
+vec![
+    Identifier { text_begin: 0, text_len: 4 },
+    Identifier { text_begin: 4, text_len: 4 },
+    Identifier { text_begin: 8, text_len: 25 }
+]
