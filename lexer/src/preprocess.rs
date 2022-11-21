@@ -22,26 +22,30 @@ pub fn preprocess(
                     },
                     '*' => {
                         comment_start = line_num;
+                        o.push_str("  ");
                         loop {
                             match i.next() {
-                                Some('*') => match i.next() {
-                                    Some('/') => {
-                                        o.push(' ');
-                                        break;
+                                Some('*') => {
+                                    o.push(' ');
+                                    match i.next() {
+                                        Some('/') => {
+                                            o.push(' ');
+                                            break;
+                                        }
+                                        Some('\n') => {
+                                            line_num += 1;
+                                            o.push('\n');
+                                        }
+                                        None => return Err(comment_start),
+                                        _ => o.push(' '),
                                     }
-                                    Some('\n') => {
-                                        line_num += 1;
-                                        o.push('\n');
-                                    }
-                                    None => return Err(comment_start),
-                                    _ => {}
-                                },
+                                }
                                 Some('\n') => {
                                     line_num += 1;
                                     o.push('\n');
                                 }
                                 None => return Err(comment_start),
-                                _ => {}
+                                _ => o.push(' '),
                             }
                         }
                     }
