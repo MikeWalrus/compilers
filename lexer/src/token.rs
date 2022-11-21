@@ -27,7 +27,7 @@ pub enum RelopKind {
 #[derive(Debug, Clone)]
 #[repr(C, u32)]
 #[cfg_attr(test, derive(PartialEq))]
-pub enum Token {
+pub enum TokenKind {
     IntegerConstant(u32) = 0,
     FloatingConstant(f64) = 1,
     Id(usize) = 2,
@@ -53,6 +53,22 @@ pub enum Token {
     Not = 22,
 }
 
+#[repr(C)]
+#[derive(Debug, Clone)]
+#[cfg_attr(test, derive(PartialEq))]
+pub struct Position {
+    pub line: usize,
+    pub col: usize,
+}
+
+#[repr(C)]
+#[derive(Debug, Clone)]
+#[cfg_attr(test, derive(PartialEq))]
+pub struct Token {
+    pub kind: TokenKind,
+    pub pos: Position,
+}
+
 #[derive(Debug, Clone)]
 #[cfg_attr(test, derive(PartialEq))]
 pub struct Identifier {
@@ -60,15 +76,15 @@ pub struct Identifier {
     pub text_len: usize,
 }
 
-pub fn keyword_map() -> HashMap<&'static str, Token> {
+pub fn keyword_map() -> HashMap<&'static str, TokenKind> {
     hashmap! {
-        "int" => Token::Qualifier(QualifierKind::Int),
-        "double" => Token::Qualifier(QualifierKind::Double),
-        "void" => Token::Qualifier(QualifierKind::Void),
-        "if" => Token::If,
-        "else" => Token::Else,
-        "while" => Token::While,
-        "for" => Token::For,
-        "do" => Token::Do
+        "int" => TokenKind::Qualifier(QualifierKind::Int),
+        "double" => TokenKind::Qualifier(QualifierKind::Double),
+        "void" => TokenKind::Qualifier(QualifierKind::Void),
+        "if" => TokenKind::If,
+        "else" => TokenKind::Else,
+        "while" => TokenKind::While,
+        "for" => TokenKind::For,
+        "do" => TokenKind::Do
     }
 }

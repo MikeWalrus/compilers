@@ -1,1 +1,74 @@
-vec![Id(0), Id(1), Id(0), Id(1), Id(2), Id(1), Id(2), Id(0)]
+vec![
+    Token {
+        kind: Id(
+            0,
+        ),
+        pos: Position {
+            line: 1,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Id(
+            1,
+        ),
+        pos: Position {
+            line: 1,
+            col: 6,
+        },
+    },
+    Token {
+        kind: Id(
+            0,
+        ),
+        pos: Position {
+            line: 1,
+            col: 11,
+        },
+    },
+    Token {
+        kind: Id(
+            1,
+        ),
+        pos: Position {
+            line: 1,
+            col: 16,
+        },
+    },
+    Token {
+        kind: Id(
+            2,
+        ),
+        pos: Position {
+            line: 2,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Id(
+            1,
+        ),
+        pos: Position {
+            line: 2,
+            col: 6,
+        },
+    },
+    Token {
+        kind: Id(
+            2,
+        ),
+        pos: Position {
+            line: 2,
+            col: 11,
+        },
+    },
+    Token {
+        kind: Id(
+            0,
+        ),
+        pos: Position {
+            line: 2,
+            col: 16,
+        },
+    }
+]

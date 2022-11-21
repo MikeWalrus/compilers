@@ -1,3 +1,73 @@
 vec![
-    Qualifier(Int), Qualifier(Double), Qualifier(Void), If, Else, Do, While, For, Id(0)
+    Token {
+        kind: Qualifier(
+            Int,
+        ),
+        pos: Position {
+            line: 1,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Qualifier(
+            Double,
+        ),
+        pos: Position {
+            line: 1,
+            col: 5,
+        },
+    },
+    Token {
+        kind: Qualifier(
+            Void,
+        ),
+        pos: Position {
+            line: 1,
+            col: 12,
+        },
+    },
+    Token {
+        kind: If,
+        pos: Position {
+            line: 2,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Else,
+        pos: Position {
+            line: 2,
+            col: 4,
+        },
+    },
+    Token {
+        kind: Do,
+        pos: Position {
+            line: 3,
+            col: 1,
+        },
+    },
+    Token {
+        kind: While,
+        pos: Position {
+            line: 3,
+            col: 4,
+        },
+    },
+    Token {
+        kind: For,
+        pos: Position {
+            line: 4,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Id(
+            0,
+        ),
+        pos: Position {
+            line: 5,
+            col: 1,
+        },
+    }
 ]

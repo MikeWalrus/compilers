@@ -1,25 +1,195 @@
 vec![
-    Qualifier(Int),
-    Id(0),
-    Relop(Assign),
-    IntegerConstant(1),
-    Semicolon,
-    Qualifier(Int),
-    Id(1),
-    Relop(Assign),
-    IntegerConstant(1),
-    Semicolon,
-    Qualifier(Int),
-    Id(2),
-    Relop(Assign),
-    IntegerConstant(2),
-    Star,
-    Id(0),
-    Plus,
-    IntegerConstant(2),
-    Star,
-    Id(1),
-    Semicolon,
-    Id(2),
-    Semicolon,
+    Token {
+        kind: Qualifier(
+            Int,
+        ),
+        pos: Position {
+            line: 1,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Id(
+            0,
+        ),
+        pos: Position {
+            line: 1,
+            col: 5,
+        },
+    },
+    Token {
+        kind: Relop(
+            Assign,
+        ),
+        pos: Position {
+            line: 1,
+            col: 10,
+        },
+    },
+    Token {
+        kind: IntegerConstant(
+            1,
+        ),
+        pos: Position {
+            line: 1,
+            col: 12,
+        },
+    },
+    Token {
+        kind: Semicolon,
+        pos: Position {
+            line: 1,
+            col: 13,
+        },
+    },
+    Token {
+        kind: Qualifier(
+            Int,
+        ),
+        pos: Position {
+            line: 2,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Id(
+            1,
+        ),
+        pos: Position {
+            line: 2,
+            col: 5,
+        },
+    },
+    Token {
+        kind: Relop(
+            Assign,
+        ),
+        pos: Position {
+            line: 2,
+            col: 10,
+        },
+    },
+    Token {
+        kind: IntegerConstant(
+            1,
+        ),
+        pos: Position {
+            line: 2,
+            col: 12,
+        },
+    },
+    Token {
+        kind: Semicolon,
+        pos: Position {
+            line: 2,
+            col: 13,
+        },
+    },
+    Token {
+        kind: Qualifier(
+            Int,
+        ),
+        pos: Position {
+            line: 3,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Id(
+            2,
+        ),
+        pos: Position {
+            line: 3,
+            col: 5,
+        },
+    },
+    Token {
+        kind: Relop(
+            Assign,
+        ),
+        pos: Position {
+            line: 3,
+            col: 31,
+        },
+    },
+    Token {
+        kind: IntegerConstant(
+            2,
+        ),
+        pos: Position {
+            line: 3,
+            col: 33,
+        },
+    },
+    Token {
+        kind: Star,
+        pos: Position {
+            line: 3,
+            col: 35,
+        },
+    },
+    Token {
+        kind: Id(
+            0,
+        ),
+        pos: Position {
+            line: 3,
+            col: 37,
+        },
+    },
+    Token {
+        kind: Plus,
+        pos: Position {
+            line: 3,
+            col: 42,
+        },
+    },
+    Token {
+        kind: IntegerConstant(
+            2,
+        ),
+        pos: Position {
+            line: 3,
+            col: 44,
+        },
+    },
+    Token {
+        kind: Star,
+        pos: Position {
+            line: 3,
+            col: 46,
+        },
+    },
+    Token {
+        kind: Id(
+            1,
+        ),
+        pos: Position {
+            line: 3,
+            col: 48,
+        },
+    },
+    Token {
+        kind: Semicolon,
+        pos: Position {
+            line: 3,
+            col: 52,
+        },
+    },
+    Token {
+        kind: Id(
+            2,
+        ),
+        pos: Position {
+            line: 4,
+            col: 1,
+        },
+    },
+    Token {
+        kind: Semicolon,
+        pos: Position {
+            line: 4,
+            col: 26,
+        },
+    }
 ]

@@ -1,1 +1,1 @@
-vec![Id(0), Id(1)]
+vec![Token { kind: Id(0), pos: Position { line: 1, col: 1 } }, Token { kind: Id(1), pos: Position { line: 1, col: 5 } }]

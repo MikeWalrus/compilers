@@ -8,7 +8,7 @@ use anyhow::Result;
 
 use crate::{
     lexer::LexerOutput,
-    token::{Identifier, Token},
+    token::{Identifier, TokenKind},
 };
 
 #[repr(C)]
@@ -28,7 +28,7 @@ impl Header {
     fn new(lexer_output: &LexerOutput) -> Self {
         let token_offset = size_of::<Header>();
         let id_offset =
-            token_offset + lexer_output.tokens.len() * size_of::<Token>();
+            token_offset + lexer_output.tokens.len() * size_of::<TokenKind>();
         let text_offset =
             id_offset + lexer_output.id_table.len() * size_of::<Identifier>();
         Header {
@@ -122,7 +122,7 @@ mod test {
 
     use crate::{
         lexer::LexerOutput,
-        token::{Identifier, Token},
+        token::{Identifier, Position, Token, TokenKind},
     };
 
     use super::output;
@@ -132,7 +132,16 @@ mod test {
     #[test]
     fn test_output() -> Result<()> {
         let lexer_output = LexerOutput {
-            tokens: vec![Token::Id(0), Token::Else],
+            tokens: vec![
+                Token {
+                    kind: TokenKind::Id(0),
+                    pos: Position { line: 1, col: 1 },
+                },
+                Token {
+                    kind: TokenKind::Else,
+                    pos: Position { line: 1, col: 5 },
+                },
+            ],
             id_table: vec![Identifier {
                 text_begin: 0,
                 text_len: 3,
