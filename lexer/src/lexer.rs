@@ -5,7 +5,7 @@ use std::iter::Peekable;
 use super::error::*;
 use super::token::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[cfg_attr(test, derive(PartialEq))]
 pub struct LexerOutput {
     pub tokens: Vec<Token>,
@@ -238,6 +238,7 @@ mod test {
     use anyhow::Result;
     use test_case::test_case;
     use QualifierKind::*;
+    use RelopKind::*;
     use Token::*;
 
     #[test_case("123", Ok(vec![IntegerConstant(123)]))]

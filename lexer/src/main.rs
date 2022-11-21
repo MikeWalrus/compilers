@@ -1,5 +1,7 @@
+#![feature(new_uninit)]
 mod error;
 mod lexer;
+mod persist;
 mod preprocess;
 mod token;
 
@@ -12,6 +14,8 @@ use std::{
 use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use error::LexError;
+use lexer::LexerOutput;
+use persist::output;
 
 #[derive(Parser)]
 struct Args {
@@ -24,6 +28,9 @@ struct Args {
     /// Output human-readable tokens as well
     #[arg(short('H'), long)]
     human_readable: bool,
+    /// Read and show lexer output only
+    #[arg(short, long)]
+    show_output: bool,
 
     #[arg(short, long)]
     output: Option<String>,
@@ -31,17 +38,39 @@ struct Args {
     file: String,
 }
 
-fn preprocessed_path(original_path: &Path) -> PathBuf {
-    let mut path = original_path.file_stem().unwrap().to_owned();
-    path.push(".i");
-    PathBuf::from(path)
+impl Args {
+    fn output_file<F>(self, rename: F) -> Result<File, std::io::Error>
+    where
+        F: Fn(&str) -> String,
+    {
+        File::create(self.output.unwrap_or_else(|| rename(&self.file)))
+    }
 }
 
+fn modify_ext(original_path: &str, ext: &str) -> String {
+    let mut path = PathBuf::from(original_path).file_stem().unwrap().to_owned();
+    path.push(ext);
+    path.into_string().unwrap()
+}
+
+fn preprocessed_path(original_path: &str) -> String {
+    modify_ext(original_path, ".i")
+}
+
+fn lexer_output_path(original_path: &str) -> String {
+    modify_ext(original_path, ".lexeroutput")
+}
 fn main() -> Result<()> {
     let args = Args::parse();
     let file_path = Path::new(&args.file);
     let mut file = File::open(&args.file)
         .with_context(|| format!("cannot open \"{}\"", args.file))?;
+    if args.show_output {
+        let lexer_output = LexerOutput::try_from(file)
+            .context("corrupted lexer output file")?;
+        println!("{:#?}", lexer_output);
+        return Ok(());
+    }
     let mut src = String::new();
     file.read_to_string(&mut src)?;
     let preprocessed = if !args.preprocessed {
@@ -59,26 +88,32 @@ fn main() -> Result<()> {
     };
 
     if args.preprocessor_only {
-        let output_path = preprocessed_path(file_path);
-        println!("{output_path:?}");
-        let mut output = File::create(output_path)?;
+        let mut output = args
+            .output_file(preprocessed_path)
+            .context("cannot create file for preprocessor output")?;
         output.write_all(preprocessed.as_bytes())?;
         return Ok(());
     }
 
     if args.preprocessor_only {
-        return Err(anyhow!("expect input to be not have been preprocessed"));
+        return Err(anyhow!("expect input to not have been preprocessed"));
     }
 
-    let output =
+    let lexer_output =
         lexer::scan(&preprocessed).map_err(|e| LexError::TokenError {
             file_path: file_path.to_owned(),
             source: e,
         })?;
 
     if args.human_readable {
-        eprintln!("{:#?}", output);
+        eprintln!("{:#?}", lexer_output);
     }
+
+    let mut output_file = args
+        .output_file(lexer_output_path)
+        .context("cannot create file for lexer output")?;
+
+    output(&mut output_file, lexer_output)?;
 
     Ok(())
 }
