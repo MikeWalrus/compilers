@@ -1,19 +1,25 @@
+use crate::token::Position;
+
 pub fn preprocess(
-    src: impl IntoIterator<Item = char>,
-) -> Result<String, usize> {
+    src: impl IntoIterator<Item = (usize, char)>,
+) -> Result<String, Position> {
     let mut i = src.into_iter();
     let mut o = String::new();
     let mut line_num: usize = 1;
-    let mut comment_start;
+    let mut line_start = 0;
     'outer: while let Some(c) = i.next() {
-        match c {
+        match c.1 {
             '/' => match i.next() {
-                Some(c) => match c {
+                Some(c) => match c.1 {
                     '/' => loop {
                         match i.next() {
-                            Some('\n') => {
-                                line_num += 1;
-                                o.push('\n');
+                            Some((len, '\n')) => {
+                                new_line(
+                                    &mut line_num,
+                                    &mut line_start,
+                                    len,
+                                    &mut o,
+                                );
                                 break;
                             }
                             None => break 'outer,
@@ -21,28 +27,39 @@ pub fn preprocess(
                         }
                     },
                     '*' => {
-                        comment_start = line_num;
+                        let comment_start = Position {
+                            line: line_num,
+                            col: c.0 - line_start,
+                        };
                         o.push_str("  ");
                         loop {
                             match i.next() {
-                                Some('*') => {
+                                Some((_, '*')) => {
                                     o.push(' ');
                                     match i.next() {
-                                        Some('/') => {
+                                        Some((_, '/')) => {
                                             o.push(' ');
                                             break;
                                         }
-                                        Some('\n') => {
-                                            line_num += 1;
-                                            o.push('\n');
+                                        Some((len, '\n')) => {
+                                            new_line(
+                                                &mut line_num,
+                                                &mut line_start,
+                                                len,
+                                                &mut o,
+                                            );
                                         }
                                         None => return Err(comment_start),
                                         _ => o.push(' '),
                                     }
                                 }
-                                Some('\n') => {
-                                    line_num += 1;
-                                    o.push('\n');
+                                Some((len, '\n')) => {
+                                    new_line(
+                                        &mut line_num,
+                                        &mut line_start,
+                                        len,
+                                        &mut o,
+                                    );
                                 }
                                 None => return Err(comment_start),
                                 _ => o.push(' '),
@@ -60,15 +77,26 @@ pub fn preprocess(
                 }
             },
             _ => {
-                if c == '\n' {
-                    line_num += 1;
+                if c.1 == '\n' {
+                    new_line(&mut line_num, &mut line_start, c.0, &mut o);
+                } else {
+                    o.push(c.1)
                 }
-
-                o.push(c)
             }
         }
     }
     Ok(o)
+}
+
+fn new_line(
+    line_num: &mut usize,
+    line_start: &mut usize,
+    curr_len: usize,
+    o: &mut String,
+) {
+    *line_num += 1;
+    *line_start = curr_len + 1;
+    o.push('\n')
 }
 
 #[cfg(test)]
@@ -77,11 +105,12 @@ mod test {
 
     use super::*;
     use anyhow::Result;
+    use pretty_assertions::assert_eq;
     use test_case::test_case;
 
     enum Expected {
         AnsFile(&'static str),
-        SomeError { line_num: usize },
+        SomeError { pos: Position },
     }
     use Expected::*;
 
@@ -114,21 +143,21 @@ mod test {
     #[test_case("comment/mix/2.txt", AnsFile("comment/mix/2-ans.txt"))]
     #[test_case(
         "comment/unterminated/1.txt",
-        SomeError{line_num: 1}
+        SomeError{pos: Position{line: 1, col: 1}}
     )]
     #[test_case(
         "comment/unterminated/2.txt",
-        SomeError{line_num: 1}
+        SomeError{pos: Position{line: 1, col: 1}}
     )]
     #[test_case(
         "comment/unterminated/3.txt",
-        SomeError{line_num: 4}
+        SomeError{pos: Position{line: 4, col: 1}}
     )]
     fn test_preprocess(file: &str, expected: Expected) -> Result<()> {
         let mut file = File::open(String::from("testcase/") + file)?;
         let mut src = String::new();
         file.read_to_string(&mut src)?;
-        let preprocessed = preprocess(src.chars());
+        let preprocessed = preprocess(src.char_indices());
         match expected {
             AnsFile(f) => {
                 let mut ans_file = File::open(String::from("testcase/") + f)?;
@@ -136,8 +165,8 @@ mod test {
                 ans_file.read_to_string(&mut ans)?;
                 assert_eq!(preprocessed.unwrap(), ans);
             }
-            SomeError { line_num } => {
-                assert_eq!(preprocessed.unwrap_err(), line_num)
+            SomeError { pos } => {
+                assert_eq!(preprocessed.unwrap_err(), pos)
             }
         }
         Ok(())

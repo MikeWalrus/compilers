@@ -4,6 +4,7 @@ mod lexer;
 mod persist;
 mod preprocess;
 mod token;
+mod util;
 
 use std::{
     fs::File,
@@ -74,11 +75,11 @@ fn main() -> Result<()> {
     let mut src = String::new();
     file.read_to_string(&mut src)?;
     let preprocessed = if !args.preprocessed {
-        preprocess::preprocess(src.chars()).map_err(|e| {
+        preprocess::preprocess(src.char_indices()).map_err(|e| {
             LexError::PreprocessError {
                 file_path: file_path.to_owned(),
                 source: error::Error {
-                    line_num: e,
+                    pos: e,
                     error_kind: error::ErrorKind::UnterminatedComment,
                 },
             }

@@ -2,6 +2,8 @@ use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::iter::Peekable;
 
+use crate::util::ignore_num_ref;
+
 use super::error::*;
 use super::token::*;
 
@@ -26,24 +28,15 @@ pub fn scan(s: &str) -> Result<LexerOutput, Error> {
             if i.peek().is_none() {
                 break;
             }
-            match get_token(
+            if let Some(token) = get_token(
                 &mut i,
                 &mut text,
                 &keyword_map,
                 &mut known_ids,
                 &mut id_table,
                 line_num,
-            ) {
-                Ok(Some(token)) => {
-                    tokens.push(token);
-                }
-                Err(e) => {
-                    return Err(Error {
-                        line_num: line_num + 1,
-                        error_kind: e,
-                    })
-                }
-                Ok(None) => {}
+            )? {
+                tokens.push(token);
             }
         }
     }
@@ -54,10 +47,6 @@ pub fn scan(s: &str) -> Result<LexerOutput, Error> {
     })
 }
 
-fn ignore_num(x: Option<&(usize, char)>) -> Option<char> {
-    x.map(|x| x.1)
-}
-
 fn get_token_after_decimal_point(
     i: &mut Peekable<impl Iterator<Item = (usize, char)>>,
     last_match_int: Option<u32>,
@@ -65,7 +54,7 @@ fn get_token_after_decimal_point(
     let integer = if let Some(n) = last_match_int { n } else { 0 };
     let mut floating_constant: f64 = 0.;
     let mut n = 0.1;
-    match ignore_num(i.peek()) {
+    match ignore_num_ref(i.peek()) {
         Some(c @ '0'..='9') => {
             floating_constant += n * c.to_digit(10).unwrap() as f64
         }
@@ -81,7 +70,7 @@ fn get_token_after_decimal_point(
     loop {
         n *= 0.1;
         i.next().unwrap();
-        match ignore_num(i.peek()) {
+        match ignore_num_ref(i.peek()) {
             Some(c @ '0'..='9') => {
                 floating_constant += n * c.to_digit(10).unwrap() as f64
             }
@@ -153,7 +142,7 @@ fn get_token(
     known_ids: &mut HashMap<String, usize>,
     id_table: &mut Vec<Identifier>,
     line_num: usize,
-) -> Result<Option<Token>, ErrorKind> {
+) -> Result<Option<Token>, Error> {
     let _text_offset = text.len();
     let (token_start_col, c) = i.next().unwrap();
 
@@ -162,11 +151,19 @@ fn get_token(
             let token = get_token_after_decimal_point(i, None);
             match token {
                 Some(t) => Some(t),
-                None => return Err(ErrorKind::ExpectDigit),
+                None => {
+                    return Err(Error {
+                        pos: Position {
+                            line: line_num + 1,
+                            col: token_start_col + 1,
+                        },
+                        error_kind: ErrorKind::ExpectDigit,
+                    })
+                }
             }
         }
         '0' => {
-            if let Some('.') = ignore_num(i.peek()) {
+            if let Some('.') = ignore_num_ref(i.peek()) {
                 i.next().unwrap();
                 get_token_after_decimal_point(i, Some(0))
             } else {
@@ -175,7 +172,7 @@ fn get_token(
         }
         c @ '1'..='9' => {
             let int = Some(get_token_int(i, c.to_digit(10).unwrap()));
-            if let Some('.') = ignore_num(i.peek()) {
+            if let Some('.') = ignore_num_ref(i.peek()) {
                 i.next().unwrap();
                 get_token_after_decimal_point(i, int)
             } else {
@@ -194,28 +191,28 @@ fn get_token(
         '}' => Some(TokenKind::RightBrace),
         ';' => Some(TokenKind::Semicolon),
         ',' => Some(TokenKind::Comma),
-        '=' => Some(match ignore_num(i.peek()) {
+        '=' => Some(match ignore_num_ref(i.peek()) {
             Some('=') => {
                 i.next().unwrap();
                 TokenKind::Relop(RelopKind::Eq)
             }
             _ => TokenKind::Relop(RelopKind::Assign),
         }),
-        '>' => Some(match ignore_num(i.peek()) {
+        '>' => Some(match ignore_num_ref(i.peek()) {
             Some('=') => {
                 i.next().unwrap();
                 TokenKind::Relop(RelopKind::Ge)
             }
             _ => TokenKind::Relop(RelopKind::Gt),
         }),
-        '<' => Some(match ignore_num(i.peek()) {
+        '<' => Some(match ignore_num_ref(i.peek()) {
             Some('=') => {
                 i.next().unwrap();
                 TokenKind::Relop(RelopKind::Le)
             }
             _ => TokenKind::Relop(RelopKind::Lt),
         }),
-        '!' => Some(match ignore_num(i.peek()) {
+        '!' => Some(match ignore_num_ref(i.peek()) {
             Some('=') => {
                 i.next().unwrap();
                 TokenKind::Relop(RelopKind::Neq)
@@ -330,8 +327,8 @@ mod test {
         (Relop(RelopKind::Assign), 1, 5),
         (IntegerConstant(2), 1, 6)
     ]))]
-    #[test_case(".", Err(Error{line_num: 1, error_kind: ErrorKind::ExpectDigit}))]
-    #[test_case(". 1", Err(Error{line_num: 1, error_kind: ErrorKind::ExpectDigit}))]
+    #[test_case(".", Err(Error{pos: Position{line: 1, col: 1}, error_kind: ErrorKind::ExpectDigit}))]
+    #[test_case(". 1", Err(Error{pos: Position{line: 1, col: 1}, error_kind: ErrorKind::ExpectDigit}))]
     fn test_scan_without_text(
         s: &str,
         ans: Result<Vec<(TokenKind, usize, usize)>, Error>,

@@ -1,16 +1,18 @@
 use std::path::{Path, PathBuf};
 
+use crate::token::Position;
+
 #[derive(Debug, thiserror::Error)]
-#[error("{}: {}", .line_num, .error_kind)]
+#[error("{}:{}: {}", .pos.line, .pos.col, .error_kind)]
 #[cfg_attr(test, derive(PartialEq))]
 pub struct Error {
-    pub line_num: usize,
+    pub pos: Position,
     pub error_kind: ErrorKind,
 }
 
 #[derive(thiserror::Error, Debug)]
 pub enum LexError {
-    #[error("failed to preprocess {}", Path::to_str(file_path).unwrap())]
+    #[error("failed to preprocess {}:{}:{}", Path::to_str(file_path).unwrap(), source.pos.line, source.pos.col)]
     PreprocessError { file_path: PathBuf, source: Error },
     #[error("failed to scan {}", Path::to_str(file_path).unwrap())]
     TokenError { file_path: PathBuf, source: Error },
