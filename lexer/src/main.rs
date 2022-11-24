@@ -1,4 +1,5 @@
 #![feature(new_uninit)]
+#![feature(never_type)]
 mod error;
 mod lexer;
 mod persist;
@@ -14,7 +15,6 @@ use std::{
 
 use anyhow::{anyhow, Context, Result};
 use clap::Parser;
-use error::LexError;
 use lexer::LexerOutput;
 use persist::output;
 
@@ -76,13 +76,12 @@ fn main() -> Result<()> {
     file.read_to_string(&mut src)?;
     let preprocessed = if !args.preprocessed {
         preprocess::preprocess(src.char_indices()).map_err(|e| {
-            LexError::PreprocessError {
-                file_path: file_path.to_owned(),
-                source: error::Error {
-                    pos: e,
-                    error_kind: error::ErrorKind::UnterminatedComment,
-                },
+            error::Error {
+                pos: e,
+                error_kind: error::ErrorKind::UnterminatedComment,
             }
+            .report(file_path)
+            .unwrap_err()
         })?
     } else {
         src
@@ -100,11 +99,8 @@ fn main() -> Result<()> {
         return Err(anyhow!("expect input to not have been preprocessed"));
     }
 
-    let lexer_output =
-        lexer::scan(&preprocessed).map_err(|e| LexError::TokenError {
-            file_path: file_path.to_owned(),
-            source: e,
-        })?;
+    let lexer_output = lexer::scan(&preprocessed)
+        .unwrap_or_else(|e| e.report(file_path).unwrap());
 
     if args.human_readable {
         eprintln!("{:#?}", lexer_output);

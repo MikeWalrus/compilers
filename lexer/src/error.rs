@@ -1,6 +1,13 @@
-use std::path::{Path, PathBuf};
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+    path::Path,
+    process::exit,
+};
 
 use crate::token::Position;
+use anyhow::{Context, Result};
+use colored::Colorize;
 
 #[derive(Debug, thiserror::Error)]
 #[error("{}:{}: {}", .pos.line, .pos.col, .error_kind)]
@@ -10,12 +17,26 @@ pub struct Error {
     pub error_kind: ErrorKind,
 }
 
-#[derive(thiserror::Error, Debug)]
-pub enum LexError {
-    #[error("failed to preprocess {}:{}:{}", Path::to_str(file_path).unwrap(), source.pos.line, source.pos.col)]
-    PreprocessError { file_path: PathBuf, source: Error },
-    #[error("failed to scan {}", Path::to_str(file_path).unwrap())]
-    TokenError { file_path: PathBuf, source: Error },
+impl Error {
+    pub fn report(&self, file_path: &Path) -> Result<!> {
+        let file = File::open(file_path)?;
+        let reader = BufReader::new(file);
+        eprintln!("{}:{}", file_path.display(), self);
+        let line = reader
+            .lines()
+            .nth(self.pos.line - 1)
+            .with_context(|| format!("cannot find line {}", self.pos.line))??;
+        let error_line = format!("{} | ", self.pos.line);
+        let prefix_len = error_line.len();
+        eprintln!("{}{}", error_line.blue().bold(), line);
+        eprint!(
+            "{:>width$}",
+            "^".yellow().bold(),
+            width = prefix_len + self.pos.col
+        );
+        eprintln!(" {}", self.error_kind.to_string().red().bold().italic());
+        exit(1)
+    }
 }
 
 #[derive(Debug, strum_macros::Display)]
