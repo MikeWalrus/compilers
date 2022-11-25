@@ -328,6 +328,9 @@ mod test {
         (IntegerConstant(2), 1, 6)
     ]))]
     #[test_case(".", Err(Error{pos: Position{line: 1, col: 1}, error_kind: ErrorKind::ExpectDigit}))]
+    #[test_case(".a", Err(Error{pos: Position{line: 1, col: 1}, error_kind: ErrorKind::ExpectDigit}))]
+    #[test_case("b.", Err(Error{pos: Position{line: 1, col: 2}, error_kind: ErrorKind::ExpectDigit}))]
+    #[test_case("b.a", Err(Error{pos: Position{line: 1, col: 2}, error_kind: ErrorKind::ExpectDigit}))]
     #[test_case(". 1", Err(Error{pos: Position{line: 1, col: 1}, error_kind: ErrorKind::ExpectDigit}))]
     fn test_scan_without_text(
         s: &str,

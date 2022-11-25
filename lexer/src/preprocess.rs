@@ -141,6 +141,7 @@ mod test {
     )]
     #[test_case("comment/mix/1.txt", AnsFile("comment/mix/1-ans.txt"))]
     #[test_case("comment/mix/2.txt", AnsFile("comment/mix/2-ans.txt"))]
+    #[test_case("comment/mix/3.txt", AnsFile("comment/mix/3-ans.txt"))]
     #[test_case(
         "comment/unterminated/1.txt",
         SomeError{pos: Position{line: 1, col: 1}}
@@ -151,7 +152,7 @@ mod test {
     )]
     #[test_case(
         "comment/unterminated/3.txt",
-        SomeError{pos: Position{line: 4, col: 1}}
+        SomeError{pos: Position{line: 4, col: 4}}
     )]
     fn test_preprocess(file: &str, expected: Expected) -> Result<()> {
         let mut file = File::open(String::from("testcase/") + file)?;

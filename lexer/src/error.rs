@@ -10,7 +10,7 @@ use anyhow::{Context, Result};
 use colored::Colorize;
 
 #[derive(Debug, thiserror::Error)]
-#[error("{}:{}: {}", .pos.line, .pos.col, .error_kind)]
+#[error("{}:{}: {:?}", .pos.line, .pos.col, .error_kind)]
 #[cfg_attr(test, derive(PartialEq))]
 pub struct Error {
     pub pos: Position,
@@ -44,6 +44,6 @@ impl Error {
 pub enum ErrorKind {
     #[strum(serialize = "unterminated comment")]
     UnterminatedComment,
-    #[strum(serialize = "expect digit after \'.\'")]
+    #[strum(serialize = "expect a digit before or after \'.\'")]
     ExpectDigit,
 }
