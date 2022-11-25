@@ -62,6 +62,13 @@ vec![
         },
     },
     Token {
+        kind: Return,
+        pos: Position {
+            line: 4,
+            col: 5,
+        },
+    },
+    Token {
         kind: Id(
             0,
         ),

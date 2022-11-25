@@ -51,6 +51,7 @@ pub enum TokenKind {
     Semicolon = 20,
     Comma = 21,
     Not = 22,
+    Return = 23,
 }
 
 #[repr(C)]
@@ -85,6 +86,7 @@ pub fn keyword_map() -> HashMap<&'static str, TokenKind> {
         "else" => TokenKind::Else,
         "while" => TokenKind::While,
         "for" => TokenKind::For,
-        "do" => TokenKind::Do
+        "do" => TokenKind::Do,
+        "return" => TokenKind::Return
     }
 }
