@@ -103,7 +103,7 @@ fn main() -> Result<()> {
         .unwrap_or_else(|e| e.report(file_path).unwrap());
 
     if args.human_readable {
-        eprintln!("{:#?}", lexer_output);
+        println!("{:#?}", lexer_output);
     }
 
     let mut output_file = args

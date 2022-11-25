@@ -1,0 +1,745 @@
+LexerOutput {
+    tokens: [
+        Token {
+            kind: Qualifier(
+                Int,
+            ),
+            pos: Position {
+                line: 1,
+                col: 1,
+            },
+        },
+        Token {
+            kind: Id(
+                0,
+            ),
+            pos: Position {
+                line: 1,
+                col: 5,
+            },
+        },
+        Token {
+            kind: LeftParen,
+            pos: Position {
+                line: 1,
+                col: 22,
+            },
+        },
+        Token {
+            kind: Qualifier(
+                Int,
+            ),
+            pos: Position {
+                line: 1,
+                col: 23,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 1,
+                col: 26,
+            },
+        },
+        Token {
+            kind: Id(
+                1,
+            ),
+            pos: Position {
+                line: 1,
+                col: 28,
+            },
+        },
+        Token {
+            kind: Comma,
+            pos: Position {
+                line: 1,
+                col: 32,
+            },
+        },
+        Token {
+            kind: Qualifier(
+                Int,
+            ),
+            pos: Position {
+                line: 1,
+                col: 34,
+            },
+        },
+        Token {
+            kind: Id(
+                2,
+            ),
+            pos: Position {
+                line: 1,
+                col: 38,
+            },
+        },
+        Token {
+            kind: RightParen,
+            pos: Position {
+                line: 1,
+                col: 46,
+            },
+        },
+        Token {
+            kind: LeftBrace,
+            pos: Position {
+                line: 2,
+                col: 1,
+            },
+        },
+        Token {
+            kind: If,
+            pos: Position {
+                line: 3,
+                col: 2,
+            },
+        },
+        Token {
+            kind: LeftParen,
+            pos: Position {
+                line: 3,
+                col: 5,
+            },
+        },
+        Token {
+            kind: Id(
+                2,
+            ),
+            pos: Position {
+                line: 3,
+                col: 6,
+            },
+        },
+        Token {
+            kind: Relop(
+                Lt,
+            ),
+            pos: Position {
+                line: 3,
+                col: 15,
+            },
+        },
+        Token {
+            kind: IntegerConstant(
+                2,
+            ),
+            pos: Position {
+                line: 3,
+                col: 17,
+            },
+        },
+        Token {
+            kind: RightParen,
+            pos: Position {
+                line: 3,
+                col: 18,
+            },
+        },
+        Token {
+            kind: LeftBrace,
+            pos: Position {
+                line: 3,
+                col: 20,
+            },
+        },
+        Token {
+            kind: Return,
+            pos: Position {
+                line: 4,
+                col: 3,
+            },
+        },
+        Token {
+            kind: Id(
+                2,
+            ),
+            pos: Position {
+                line: 4,
+                col: 10,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 4,
+                col: 18,
+            },
+        },
+        Token {
+            kind: RightBrace,
+            pos: Position {
+                line: 5,
+                col: 2,
+            },
+        },
+        Token {
+            kind: Qualifier(
+                Int,
+            ),
+            pos: Position {
+                line: 6,
+                col: 2,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 6,
+                col: 5,
+            },
+        },
+        Token {
+            kind: Id(
+                3,
+            ),
+            pos: Position {
+                line: 6,
+                col: 7,
+            },
+        },
+        Token {
+            kind: Relop(
+                Assign,
+            ),
+            pos: Position {
+                line: 6,
+                col: 9,
+            },
+        },
+        Token {
+            kind: Id(
+                1,
+            ),
+            pos: Position {
+                line: 6,
+                col: 11,
+            },
+        },
+        Token {
+            kind: Plus,
+            pos: Position {
+                line: 6,
+                col: 16,
+            },
+        },
+        Token {
+            kind: IntegerConstant(
+                2,
+            ),
+            pos: Position {
+                line: 6,
+                col: 18,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 6,
+                col: 19,
+            },
+        },
+        Token {
+            kind: Qualifier(
+                Int,
+            ),
+            pos: Position {
+                line: 7,
+                col: 2,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 7,
+                col: 5,
+            },
+        },
+        Token {
+            kind: Id(
+                4,
+            ),
+            pos: Position {
+                line: 7,
+                col: 7,
+            },
+        },
+        Token {
+            kind: Relop(
+                Assign,
+            ),
+            pos: Position {
+                line: 7,
+                col: 11,
+            },
+        },
+        Token {
+            kind: Id(
+                1,
+            ),
+            pos: Position {
+                line: 7,
+                col: 13,
+            },
+        },
+        Token {
+            kind: Plus,
+            pos: Position {
+                line: 7,
+                col: 18,
+            },
+        },
+        Token {
+            kind: Id(
+                2,
+            ),
+            pos: Position {
+                line: 7,
+                col: 20,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 7,
+                col: 28,
+            },
+        },
+        Token {
+            kind: For,
+            pos: Position {
+                line: 8,
+                col: 2,
+            },
+        },
+        Token {
+            kind: LeftParen,
+            pos: Position {
+                line: 8,
+                col: 6,
+            },
+        },
+        Token {
+            kind: Qualifier(
+                Int,
+            ),
+            pos: Position {
+                line: 8,
+                col: 7,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 8,
+                col: 10,
+            },
+        },
+        Token {
+            kind: Id(
+                5,
+            ),
+            pos: Position {
+                line: 8,
+                col: 12,
+            },
+        },
+        Token {
+            kind: Relop(
+                Assign,
+            ),
+            pos: Position {
+                line: 8,
+                col: 14,
+            },
+        },
+        Token {
+            kind: Id(
+                1,
+            ),
+            pos: Position {
+                line: 8,
+                col: 16,
+            },
+        },
+        Token {
+            kind: Plus,
+            pos: Position {
+                line: 8,
+                col: 21,
+            },
+        },
+        Token {
+            kind: IntegerConstant(
+                2,
+            ),
+            pos: Position {
+                line: 8,
+                col: 23,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 8,
+                col: 24,
+            },
+        },
+        Token {
+            kind: Id(
+                5,
+            ),
+            pos: Position {
+                line: 8,
+                col: 26,
+            },
+        },
+        Token {
+            kind: Relop(
+                Neq,
+            ),
+            pos: Position {
+                line: 8,
+                col: 28,
+            },
+        },
+        Token {
+            kind: Id(
+                4,
+            ),
+            pos: Position {
+                line: 8,
+                col: 31,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 8,
+                col: 34,
+            },
+        },
+        Token {
+            kind: Id(
+                5,
+            ),
+            pos: Position {
+                line: 8,
+                col: 36,
+            },
+        },
+        Token {
+            kind: Plus,
+            pos: Position {
+                line: 8,
+                col: 37,
+            },
+        },
+        Token {
+            kind: Plus,
+            pos: Position {
+                line: 8,
+                col: 38,
+            },
+        },
+        Token {
+            kind: RightParen,
+            pos: Position {
+                line: 8,
+                col: 39,
+            },
+        },
+        Token {
+            kind: LeftBrace,
+            pos: Position {
+                line: 8,
+                col: 41,
+            },
+        },
+        Token {
+            kind: If,
+            pos: Position {
+                line: 9,
+                col: 3,
+            },
+        },
+        Token {
+            kind: LeftParen,
+            pos: Position {
+                line: 9,
+                col: 6,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 9,
+                col: 7,
+            },
+        },
+        Token {
+            kind: LeftParen,
+            pos: Position {
+                line: 9,
+                col: 8,
+            },
+        },
+        Token {
+            kind: Id(
+                3,
+            ),
+            pos: Position {
+                line: 9,
+                col: 9,
+            },
+        },
+        Token {
+            kind: Minus,
+            pos: Position {
+                line: 9,
+                col: 11,
+            },
+        },
+        Token {
+            kind: IntegerConstant(
+                2,
+            ),
+            pos: Position {
+                line: 9,
+                col: 13,
+            },
+        },
+        Token {
+            kind: RightParen,
+            pos: Position {
+                line: 9,
+                col: 14,
+            },
+        },
+        Token {
+            kind: Relop(
+                Lt,
+            ),
+            pos: Position {
+                line: 9,
+                col: 16,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 9,
+                col: 18,
+            },
+        },
+        Token {
+            kind: Id(
+                5,
+            ),
+            pos: Position {
+                line: 9,
+                col: 19,
+            },
+        },
+        Token {
+            kind: RightParen,
+            pos: Position {
+                line: 9,
+                col: 20,
+            },
+        },
+        Token {
+            kind: LeftBrace,
+            pos: Position {
+                line: 9,
+                col: 22,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 10,
+                col: 4,
+            },
+        },
+        Token {
+            kind: Id(
+                3,
+            ),
+            pos: Position {
+                line: 10,
+                col: 5,
+            },
+        },
+        Token {
+            kind: Relop(
+                Assign,
+            ),
+            pos: Position {
+                line: 10,
+                col: 7,
+            },
+        },
+        Token {
+            kind: Star,
+            pos: Position {
+                line: 10,
+                col: 9,
+            },
+        },
+        Token {
+            kind: Id(
+                5,
+            ),
+            pos: Position {
+                line: 10,
+                col: 10,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 10,
+                col: 11,
+            },
+        },
+        Token {
+            kind: Id(
+                3,
+            ),
+            pos: Position {
+                line: 11,
+                col: 4,
+            },
+        },
+        Token {
+            kind: Relop(
+                Assign,
+            ),
+            pos: Position {
+                line: 11,
+                col: 6,
+            },
+        },
+        Token {
+            kind: Id(
+                3,
+            ),
+            pos: Position {
+                line: 11,
+                col: 8,
+            },
+        },
+        Token {
+            kind: Plus,
+            pos: Position {
+                line: 11,
+                col: 10,
+            },
+        },
+        Token {
+            kind: IntegerConstant(
+                1,
+            ),
+            pos: Position {
+                line: 11,
+                col: 12,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 11,
+                col: 13,
+            },
+        },
+        Token {
+            kind: RightBrace,
+            pos: Position {
+                line: 12,
+                col: 3,
+            },
+        },
+        Token {
+            kind: RightBrace,
+            pos: Position {
+                line: 13,
+                col: 2,
+            },
+        },
+        Token {
+            kind: Return,
+            pos: Position {
+                line: 14,
+                col: 2,
+            },
+        },
+        Token {
+            kind: Id(
+                3,
+            ),
+            pos: Position {
+                line: 14,
+                col: 9,
+            },
+        },
+        Token {
+            kind: Minus,
+            pos: Position {
+                line: 14,
+                col: 11,
+            },
+        },
+        Token {
+            kind: Id(
+                1,
+            ),
+            pos: Position {
+                line: 14,
+                col: 13,
+            },
+        },
+        Token {
+            kind: Semicolon,
+            pos: Position {
+                line: 14,
+                col: 17,
+            },
+        },
+        Token {
+            kind: RightBrace,
+            pos: Position {
+                line: 15,
+                col: 1,
+            },
+        },
+    ],
+    id_table: [
+        Identifier {
+            text_begin: 0,
+            text_len: 17,
+        },
+        Identifier {
+            text_begin: 17,
+            text_len: 4,
+        },
+        Identifier {
+            text_begin: 21,
+            text_len: 8,
+        },
+        Identifier {
+            text_begin: 29,
+            text_len: 1,
+        },
+        Identifier {
+            text_begin: 30,
+            text_len: 3,
+        },
+        Identifier {
+            text_begin: 33,
+            text_len: 1,
+        },
+    ],
+    text: "remove_duplicatesnumsnumsSizependi",
+}
