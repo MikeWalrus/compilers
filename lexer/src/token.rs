@@ -52,6 +52,11 @@ pub enum TokenKind {
     Comma = 21,
     Not = 22,
     Return = 23,
+    And = 24,
+    Or = 25,
+    BitAnd = 26,
+    BitOr = 27,
+    BitNot = 28
 }
 
 #[repr(C)]

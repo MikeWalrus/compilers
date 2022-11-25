@@ -191,6 +191,7 @@ fn get_token(
         '}' => Some(TokenKind::RightBrace),
         ';' => Some(TokenKind::Semicolon),
         ',' => Some(TokenKind::Comma),
+        '~' => Some(TokenKind::BitNot),
         '=' => Some(match ignore_num_ref(i.peek()) {
             Some('=') => {
                 i.next().unwrap();
@@ -219,6 +220,21 @@ fn get_token(
             }
             _ => TokenKind::Not,
         }),
+        '&' => Some(match ignore_num_ref(i.peek()) {
+            Some('&') => {
+                i.next().unwrap();
+                TokenKind::And
+            }
+            _ => TokenKind::BitAnd,
+        }),
+        '|' => Some(match ignore_num_ref(i.peek()) {
+            Some('|') => {
+                i.next().unwrap();
+                TokenKind::Or
+            }
+            _ => TokenKind::BitOr,
+        }),
+
         _ => {
             if c.is_whitespace() {
                 None
@@ -311,6 +327,16 @@ mod test {
     #[test_case(">=", Ok(vec![(Relop(RelopKind::Ge), 1, 1)]))]
     #[test_case("!", Ok(vec![(Not, 1, 1)]))]
     #[test_case("!=", Ok(vec![(Relop(RelopKind::Neq), 1, 1)]))]
+    #[test_case("~", Ok(vec![(BitNot, 1, 1)]))]
+    #[test_case("&&", Ok(vec![(And, 1, 1)]))]
+    #[test_case("&", Ok(vec![(BitAnd, 1, 1)]))]
+    #[test_case("||", Ok(vec![(Or, 1, 1)]))]
+    #[test_case("|", Ok(vec![(BitOr, 1, 1)]))]
+    #[test_case("||||&|&&&||||&", Ok(vec![
+        (Or, 1, 1), (Or, 1, 3), (BitAnd, 1, 5),
+        (BitOr, 1, 6), (And, 1, 7), (BitAnd, 1, 9),
+        (Or, 1, 10), (Or, 1, 12), (BitAnd, 1, 14)
+    ]))]
     #[test_case("!==<>==<=>=", Ok(vec![
         (Relop(RelopKind::Neq), 1, 1),
         (Relop(RelopKind::Assign), 1, 3),
