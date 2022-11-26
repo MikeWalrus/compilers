@@ -56,7 +56,9 @@ pub enum TokenKind {
     Or = 25,
     BitAnd = 26,
     BitOr = 27,
-    BitNot = 28
+    BitNot = 28,
+    Continue = 29,
+    Break = 30,
 }
 
 #[repr(C)]
@@ -92,6 +94,8 @@ pub fn keyword_map() -> HashMap<&'static str, TokenKind> {
         "while" => TokenKind::While,
         "for" => TokenKind::For,
         "do" => TokenKind::Do,
-        "return" => TokenKind::Return
+        "return" => TokenKind::Return,
+        "continue" => TokenKind::Continue,
+        "break" => TokenKind::Break
     }
 }

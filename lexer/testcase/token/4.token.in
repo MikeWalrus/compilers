@@ -69,6 +69,20 @@ vec![
         },
     },
     Token {
+        kind: Break,
+        pos: Position {
+            line: 4,
+            col: 12,
+        },
+    },
+    Token {
+        kind: Continue,
+        pos: Position {
+            line: 4,
+            col: 18,
+        },
+    },
+    Token {
         kind: Id(
             0,
         ),
