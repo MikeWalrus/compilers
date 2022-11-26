@@ -1,5 +1,6 @@
 #![feature(new_uninit)]
 #![feature(never_type)]
+mod ast;
 mod error;
 mod lexer;
 mod persist;
