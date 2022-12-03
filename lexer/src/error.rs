@@ -5,7 +5,7 @@ use std::{
     process::exit,
 };
 
-use crate::token::Position;
+use crate::token::{Position, TokenKind};
 use anyhow::{Context, Result};
 use colored::Colorize;
 
@@ -46,4 +46,11 @@ pub enum ErrorKind {
     UnterminatedComment,
     #[strum(serialize = "expect a digit before or after \'.\'")]
     ExpectDigit,
+    ExpectDeclarationSpecifier,
+    ExpectDeclarator,
+    ExpectDirectDeclarator,
+    ExpectIntegerConstant,
+    ExpectCompoundStatement,
+    UnmatchedParenthesis(Position),
+    ExpectChar(&'static str),
 }

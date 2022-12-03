@@ -3,6 +3,7 @@
 mod ast;
 mod error;
 mod lexer;
+mod parser;
 mod persist;
 mod preprocess;
 mod token;

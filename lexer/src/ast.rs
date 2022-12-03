@@ -1,93 +1,91 @@
 use crate::token::Identifier;
 
 #[derive(Debug)]
-struct TranslationUnit {
-    external_declarations: Vec<ExternalDeclaration>,
+pub(crate) struct TranslationUnit {
+    pub(crate) external_declarations: Vec<ExternalDeclaration>,
 }
 
 #[derive(Debug)]
-enum ExternalDeclaration {
+pub(crate) enum ExternalDeclaration {
     FunctionDeclaration(FunctionDefinition),
     Declaration(Declaration),
 }
 
 #[derive(Debug)]
-struct FunctionDefinition {
-    declaration_specifier: DeclarationSpecifier,
-    declarator: Declarator,
-    compound_statement: CompoundStatement,
+pub(crate) struct FunctionDefinition {
+    pub(crate) declaration_specifier: DeclarationSpecifier,
+    pub(crate) declarator: Declarator,
+    pub(crate) compound_statement: CompoundStatement,
 }
 
 #[derive(Debug)]
-struct Declaration {
-    declaration_specifier: DeclarationSpecifier,
-    init_declarator_list: InitDeclaratorList,
+pub(crate) struct Declaration {
+    pub(crate) declaration_specifier: DeclarationSpecifier,
+    pub(crate) init_declarator_list: InitDeclaratorList,
 }
 
 #[derive(Debug)]
-struct InitDeclaratorList(Vec<InitDeclarator>);
+pub(crate) struct InitDeclaratorList(pub(crate) Vec<InitDeclarator>);
 
 #[derive(Debug)]
-enum DeclarationSpecifier {
+pub(crate) enum DeclarationSpecifier {
     TypeSpecifier(TypeSpecifier),
 }
 
 #[derive(Debug)]
-enum TypeSpecifier {
+pub(crate) enum TypeSpecifier {
     Void,
     Int,
     Double,
 }
 
 #[derive(Debug)]
-struct InitDeclarator {
-    declarator: Declarator,
-    initializer: Option<Initializer>,
+pub(crate) struct InitDeclarator {
+    pub(crate) declarator: Declarator,
+    pub(crate) initializer: Option<Initializer>,
 }
 
 #[derive(Debug)]
-struct Declarator {
-    pointer: Pointer,
-    direct: DirectDeclarator,
+pub(crate) struct Declarator {
+    pub(crate) pointer: Pointer,
+    pub(crate) direct: DirectDeclarator,
 }
 
 #[derive(Debug)]
-struct Pointer {
-    num: usize,
+pub(crate) struct Pointer(pub(crate) usize);
+
+#[derive(Debug)]
+pub(crate) struct DirectDeclarator {
+    pub(crate) simple_declarator: SimpleDirectDeclarator,
+    pub(crate) modifiers: Vec<DirectDeclaratorModifier>,
 }
 
 #[derive(Debug)]
-struct DirectDeclarator {
-    simple_declarator: DirectSimpleDeclarator,
-    modifiers: Vec<DirectDeclaratorModifier>,
-}
-
-#[derive(Debug)]
-enum DirectDeclaratorModifier {
+pub(crate) enum DirectDeclaratorModifier {
     Array(usize),
     Function(Vec<ParameterDeclaration>),
 }
 
 #[derive(Debug)]
-enum DirectSimpleDeclarator {
-    Identifier(Identifier),
+pub(crate) enum SimpleDirectDeclarator {
+    Identifier(usize),
     Declarator(Box<Declarator>),
 }
 
 #[derive(Debug)]
-struct ParameterDeclaration {
-    specifier: DeclarationSpecifier,
-    declarator: Declarator,
+pub(crate) struct ParameterDeclaration {
+    pub(crate) specifier: DeclarationSpecifier,
+    pub(crate) declarator: Declarator,
 }
 
 #[derive(Debug)]
-enum Initializer {
+pub(crate) enum Initializer {
     Expression(Expression),
     List(Vec<Initializer>),
 }
 
 #[derive(Debug)]
-enum Statement {
+pub(crate) enum Statement {
     Compound(CompoundStatement),
     Expression(Expression),
     Selection(SelectionStatement),
@@ -96,67 +94,67 @@ enum Statement {
 }
 
 #[derive(Debug)]
-struct CompoundStatement(Vec<BlockItem>);
+pub(crate) struct CompoundStatement(pub(crate) Vec<BlockItem>);
 
 #[derive(Debug)]
-enum BlockItem {
+pub(crate) enum BlockItem {
     Declaration(Declaration),
     Statement(Statement),
 }
 
 #[derive(Debug)]
-struct SelectionStatement {
-    condition: Expression,
-    consequent: Box<Statement>,
-    alternative: Option<Box<Statement>>,
+pub(crate) struct SelectionStatement {
+    pub(crate) condition: Expression,
+    pub(crate) consequent: Box<Statement>,
+    pub(crate) alternative: Option<Box<Statement>>,
 }
 
 #[derive(Debug)]
-enum IterationStatement {
+pub(crate) enum IterationStatement {
     While(WhileStatement),
     Do(DoStatement),
     For(ForStatement),
 }
 
 #[derive(Debug)]
-struct WhileStatement {
-    condition: Expression,
-    body: Box<Statement>,
+pub(crate) struct WhileStatement {
+    pub(crate) condition: Expression,
+    pub(crate) body: Box<Statement>,
 }
 
 #[derive(Debug)]
-struct DoStatement {
-    body: Box<Statement>,
-    condition: Expression,
+pub(crate) struct DoStatement {
+    pub(crate) body: Box<Statement>,
+    pub(crate) condition: Expression,
 }
 
 #[derive(Debug)]
-struct ForStatement {
-    initialization: Option<ForInitialization>,
-    condition: Option<Expression>,
-    update: Option<Expression>,
+pub(crate) struct ForStatement {
+    pub(crate) initialization: Option<ForInitialization>,
+    pub(crate) condition: Option<Expression>,
+    pub(crate) update: Option<Expression>,
 }
 
 #[derive(Debug)]
-enum ForInitialization {
-    Expression(Expression),
-    Declaration(Declaration),
+pub(crate) enum ForInitialization {
+    Expression { field1: Expression },
+    Declaration { field1: Declaration },
 }
 
 #[derive(Debug)]
-enum JumpStatement {
+pub(crate) enum JumpStatement {
     Continue,
     Break,
     Return(ReturnStatement),
 }
 
 #[derive(Debug)]
-struct ReturnStatement {
-    value: Option<Expression>,
+pub(crate) struct ReturnStatement {
+    pub(crate) value: Option<Expression>,
 }
 
 #[derive(Debug)]
-enum Expression {
+pub(crate) enum Expression {
     Assignment(AssignmentExpression),
     Binary(BinaryExpression),
     Unary(UnaryExpression),
@@ -165,20 +163,20 @@ enum Expression {
 }
 
 #[derive(Debug)]
-struct AssignmentExpression {
+pub(crate) struct AssignmentExpression {
     left: Box<Expression>,
     right: Box<Expression>,
 }
 
 #[derive(Debug)]
-struct BinaryExpression {
+pub(crate) struct BinaryExpression {
     operator: BinaryOperator,
     left: Box<Expression>,
     right: Box<Expression>,
 }
 
 #[derive(Debug)]
-enum BinaryOperator {
+pub(crate) enum BinaryOperator {
     Add,
     Minus,
     Multiply,
@@ -197,13 +195,13 @@ enum BinaryOperator {
 }
 
 #[derive(Debug)]
-struct UnaryExpression {
-    operator: UnaryOperator,
-    left: Box<Expression>,
+pub(crate) struct UnaryExpression {
+    pub(crate) operator: UnaryOperator,
+    pub(crate) left: Box<Expression>,
 }
 
 #[derive(Debug)]
-enum UnaryOperator {
+pub(crate) enum UnaryOperator {
     Positive,
     Negative,
     Address,
@@ -213,19 +211,19 @@ enum UnaryOperator {
 }
 
 #[derive(Debug)]
-struct PostfixExpression {
+pub(crate) struct PostfixExpression {
     prefix: Box<Expression>,
     postfix: PostfixExpressionPostfix,
 }
 
 #[derive(Debug)]
-enum PostfixExpressionPostfix {
+pub(crate) enum PostfixExpressionPostfix {
     Subscript(Box<Expression>),
     Call(Vec<Expression>),
 }
 
 #[derive(Debug)]
-enum AtomExpression {
+pub(crate) enum AtomExpression {
     Identifier(Identifier),
     Integer(u32),
     Floating(f64),

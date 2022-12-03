@@ -62,7 +62,7 @@ pub enum TokenKind {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 #[cfg_attr(test, derive(PartialEq))]
 pub struct Position {
     pub line: usize,
