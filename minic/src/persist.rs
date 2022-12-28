@@ -59,8 +59,8 @@ where
     Ok(())
 }
 
-pub fn output(w: &mut impl Write, lexer_output: LexerOutput) -> Result<()> {
-    let header = Header::new(&lexer_output);
+pub fn output(w: &mut impl Write, lexer_output: &LexerOutput) -> Result<()> {
+    let header = Header::new(lexer_output);
     let header: [u8; size_of::<Header>()] = unsafe { transmute(header) };
     w.write_all(&header)?;
     write_slice(w, &lexer_output.tokens)?;
@@ -149,7 +149,7 @@ mod test {
             text: "abc".to_owned(),
         };
         let mut w = BufWriter::new(Vec::new());
-        output(&mut w, lexer_output.clone())?;
+        output(&mut w, &lexer_output)?;
         let v = w.into_inner()?;
         let lexer_output_read = LexerOutput::try_from(v.as_slice())?;
         assert_eq!(lexer_output, lexer_output_read);

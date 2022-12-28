@@ -5,7 +5,7 @@ use std::{
     process::exit,
 };
 
-use crate::token::{Position, TokenKind};
+use crate::token::Position;
 use anyhow::{Context, Result};
 use colored::Colorize;
 
@@ -48,9 +48,12 @@ pub enum ErrorKind {
     ExpectDigit,
     ExpectDeclarationSpecifier,
     ExpectDeclarator,
+    ExpectExpression,
     ExpectDirectDeclarator,
     ExpectIntegerConstant,
+    ExpectStatement,
     ExpectCompoundStatement,
+    ExpectForInitialization,
     UnmatchedParenthesis(Position),
-    ExpectChar(&'static str),
+    ExpectStr(String),
 }

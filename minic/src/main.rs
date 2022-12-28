@@ -1,5 +1,6 @@
 #![feature(new_uninit)]
 #![feature(never_type)]
+#![feature(assert_matches)]
 mod ast;
 mod error;
 mod lexer;
@@ -18,6 +19,7 @@ use std::{
 use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use lexer::LexerOutput;
+use parser::parse;
 use persist::output;
 
 #[derive(Parser)]
@@ -71,7 +73,7 @@ fn main() -> Result<()> {
     if args.show_output {
         let lexer_output = LexerOutput::try_from(file)
             .context("corrupted lexer output file")?;
-        println!("{:#?}", lexer_output);
+        println!("{lexer_output:#?}");
         return Ok(());
     }
     let mut src = String::new();
@@ -105,14 +107,19 @@ fn main() -> Result<()> {
         .unwrap_or_else(|e| e.report(file_path).unwrap());
 
     if args.human_readable {
-        println!("{:#?}", lexer_output);
+        println!("{lexer_output:#?}");
     }
+
+    let ast = parse(&lexer_output.tokens)
+        .unwrap_or_else(|e| e.report(file_path).unwrap());
+    let serialized = serde_json::to_string(&ast).unwrap();
+    print!("{serialized}");
 
     let mut output_file = args
         .output_file(lexer_output_path)
         .context("cannot create file for lexer output")?;
 
-    output(&mut output_file, lexer_output)?;
+    output(&mut output_file, &lexer_output)?;
 
     Ok(())
 }

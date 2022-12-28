@@ -2,18 +2,16 @@ use std::collections::HashMap;
 
 use maplit::hashmap;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(u32)]
-#[cfg_attr(test, derive(PartialEq))]
 pub enum QualifierKind {
     Void = 0,
     Int = 1,
     Double = 2,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(u32)]
-#[cfg_attr(test, derive(PartialEq))]
 pub enum RelopKind {
     Assign = 0,
     Gt = 1,
@@ -24,9 +22,8 @@ pub enum RelopKind {
     Eq = 6,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C, u32)]
-#[cfg_attr(test, derive(PartialEq))]
 pub enum TokenKind {
     IntegerConstant(u32) = 0,
     FloatingConstant(f64) = 1,
