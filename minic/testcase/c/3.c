@@ -1,0 +1,1 @@
+void (*signal(int a, void (*fp)(int b)))(int c);

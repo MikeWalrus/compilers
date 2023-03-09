@@ -15,7 +15,7 @@ mod util {
 
     use super::*;
 
-    #[trace::trace]
+    // #[trace::trace]
     pub fn parse_left<const C: char>(
         i: &mut usize,
         tokens: &[Token],
@@ -36,7 +36,7 @@ mod util {
         Ok(token.pos)
     }
 
-    #[trace]
+    // #[trace]
     pub fn parse_right<const C: char>(
         i: &mut usize,
         tokens: &[Token],
@@ -127,7 +127,7 @@ fn parse_translation_unit(
     })
 }
 
-#[trace]
+// #[trace]
 // FunctionDefinition | Declaration
 // DeclarationSpecifier Declarator CompoundStatement
 // DeclarationSpecifier (Declarator | Declarator = Initializer) {, InitDeclarator} ;
@@ -162,6 +162,7 @@ fn parse_external_declaration(
                     init_declarator,
                     parse_init_declarator,
                 )?);
+            parse_left::<';'>(i, tokens)?;
             Ok(ExternalDeclaration::Declaration(Declaration {
                 declaration_specifier: specifier,
                 init_declarator_list,
@@ -173,7 +174,7 @@ fn parse_external_declaration(
     }
 }
 
-#[trace]
+// #[trace]
 fn parse_declaration(
     i: &mut usize,
     tokens: &[Token],
@@ -192,7 +193,7 @@ fn parse_declaration(
     })
 }
 
-#[trace]
+// #[trace]
 fn parse_assign_initializer(
     t: Option<&TokenKind>,
     i: &mut usize,
@@ -238,7 +239,7 @@ fn parse_initializer(
     })
 }
 
-#[trace]
+// #[trace]
 // Pointer DirectDeclarator | DirectDeclarator
 fn parse_declarator(
     i: &mut usize,
@@ -258,7 +259,7 @@ fn parse_declarator(
     })
 }
 
-#[trace]
+// #[trace]
 // Identifier DirectDeclaratorModifiers
 // `(` Declarator `)` DirectDeclaratorModifiers
 fn parse_direct_declarator(
@@ -292,7 +293,7 @@ fn parse_direct_declarator(
     })
 }
 
-#[trace]
+// #[trace]
 fn parse_direct_declarator_modifiers(
     i: &mut usize,
     tokens: &[Token],
@@ -337,7 +338,7 @@ fn parse_integer_constant(
     Err(e())
 }
 
-#[trace]
+// #[trace]
 // ParameterDeclaration {, ParameterDeclaration}
 fn parse_parameter_list(
     i: &mut usize,
@@ -372,7 +373,7 @@ fn parse_pointer(i: &mut usize, tokens: &[Token]) -> usize {
 
 fn error(i: usize, tokens: &[Token], kind: ErrorKind) -> Error {
     let pos = if i == 0 {
-        Position { line: 0, col: 0 }
+        Position { line: 1, col: 1 }
     } else {
         tokens[(i as u32 - 1) as usize].pos
     };
@@ -406,7 +407,7 @@ mod stmt {
     use super::expr::*;
     use super::*;
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_statement(
         i: &mut usize,
         tokens: &[Token],
@@ -429,7 +430,7 @@ mod stmt {
             _ => Statement::Expression(parse_expression_statement(i, tokens)?),
         })
     }
-    #[trace::trace]
+    // #[trace::trace]
     pub(crate) fn parse_compound_statement(
         i: &mut usize,
         tokens: &[Token],
@@ -473,7 +474,7 @@ mod stmt {
         })
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_expression_statement(
         i: &mut usize,
         tokens: &[Token],
@@ -489,7 +490,7 @@ mod stmt {
         })
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_selection_statement(
         i: &mut usize,
         tokens: &[Token],
@@ -504,6 +505,7 @@ mod stmt {
         let token = tokens.get(*i);
         let alternative = if let Some(TokenKind::Else) = token.map(|t| &t.kind)
         {
+            *i += 1;
             Some(Box::new(parse_statement(i, tokens)?))
         } else {
             None
@@ -548,7 +550,7 @@ mod stmt {
         Ok(WhileStatement { condition, body })
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_for_statement(
         i: &mut usize,
         tokens: &[Token],
@@ -601,7 +603,7 @@ mod stmt {
         Ok(DoStatement { body, condition })
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_jump_statement(
         i: &mut usize,
         tokens: &[Token],
@@ -661,7 +663,7 @@ mod expr {
         }
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     pub(crate) fn parse_expression(
         i: &mut usize,
         tokens: &[Token],
@@ -683,7 +685,6 @@ mod expr {
         let left = parse_unary_expression(i, tokens)?;
         let e = || error(*i, tokens, ErrorKind::ExpectStr('='.into()));
         let token = tokens.get(*i).ok_or_else(e)?; //todo
-        println!("=? {token:?}");
         let TokenKind::Relop(RelopKind::Assign) = &token.kind else {
                 *i = i_saved;
                 return parse_logical_or_expression(i, tokens);
@@ -696,7 +697,7 @@ mod expr {
         })))
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_logical_or_expression(
         i: &mut usize,
         tokens: &[Token],
@@ -760,7 +761,7 @@ mod expr {
         )
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_relational_expression(
         i: &mut usize,
         tokens: &[Token],
@@ -778,7 +779,7 @@ mod expr {
         )
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_additive_expression(
         i: &mut usize,
         tokens: &[Token],
@@ -816,7 +817,7 @@ mod expr {
         .any(|t| t == &token.kind)
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     pub(crate) fn parse_unary_expression(
         i: &mut usize,
         tokens: &[Token],
@@ -835,7 +836,7 @@ mod expr {
         parse_postfix_expression(i, tokens)
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_postfix_expression(
         i: &mut usize,
         tokens: &[Token],
@@ -857,10 +858,10 @@ mod expr {
                 }
                 Some(TokenKind::LeftParen) => {
                     *i += 1;
-                    let arguments = parse_argument_expression_list(i, tokens)?;
                     let token = tokens.get(*i);
                     if let Some(TokenKind::RightParen) = token.map(|t| &t.kind)
                     {
+                        *i += 1;
                         ret =
                             Box::new(Expression::Postfix(PostfixExpression {
                                 operand: ret,
@@ -868,11 +869,12 @@ mod expr {
                             }));
                         continue;
                     }
+                    let arguments = parse_argument_expression_list(i, tokens)?;
                     ret = Box::new(Expression::Postfix(PostfixExpression {
                         operand: ret,
                         postfix: PostfixExpressionPostfix::Call(arguments),
                     }));
-                    parse_right::<']'>(i, tokens, left_pos.unwrap())?;
+                    parse_right::<')'>(i, tokens, left_pos.unwrap())?;
                 }
                 _ => return Ok(ret),
             }
@@ -891,7 +893,7 @@ mod expr {
         .map(|v| v.into_iter().map(|b| *b).collect())
     }
 
-    #[trace::trace]
+    // #[trace::trace]
     fn parse_primary_expression(
         i: &mut usize,
         tokens: &[Token],

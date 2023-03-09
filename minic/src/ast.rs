@@ -194,7 +194,6 @@ pub(crate) enum BinaryOperator {
 trace::init_depth_var!();
 
 impl From<&TokenKind> for BinaryOperator {
-    #[trace::trace]
     fn from(t: &TokenKind) -> Self {
         match t {
             TokenKind::And => BinaryOperator::LogicalAnd,

@@ -48,12 +48,14 @@ pub enum ErrorKind {
     ExpectDigit,
     ExpectDeclarationSpecifier,
     ExpectDeclarator,
+    #[strum(serialize = "expect an expression after this")]
     ExpectExpression,
     ExpectDirectDeclarator,
     ExpectIntegerConstant,
     ExpectStatement,
     ExpectCompoundStatement,
     ExpectForInitialization,
+    #[strum(serialize = "it's not closed")]
     UnmatchedParenthesis(Position),
     ExpectStr(String),
 }
